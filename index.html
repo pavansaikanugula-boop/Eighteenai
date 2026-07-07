@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Assistant Web App</title>
+    <title>Eighteenai Assistant</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fa-solid fa-robot"></i> Jarvis Web</h1>
+            <h1><i class="fa-solid fa-sparkles"></i> Eighteenai</h1>
             <div class="status">
                 <span id="status-dot"></span>
                 <span id="status-text">Ready</span>
@@ -20,34 +19,38 @@
 
         <div id="chat-window">
             <div class="message bot">
-                <div class="bubble">Hello! I'm your AI assistant. Click the mic or type to interact. Try saying "Play music", "Tell a story", or "Open calculator".</div>
+                <div class="bubble">Hi! I am Eighteenai. 🤖✨<br>Try saying:<br>🎵 "Play Paro"<br>🎵 "Play Sahiba"<br>📖 "Tell a story"<br>🧮 "Open calculator"</div>
             </div>
         </div>
 
+        <!-- Music Player Area -->
+        <div id="player-container" class="hidden">
+            <div class="now-playing">
+                <i class="fa-solid fa-music fa-beat"></i> Now Playing: <span id="song-title">None</span>
+                <button id="stop-music-btn" onclick="stopMusic()"><i class="fa-solid fa-stop"></i></button>
+            </div>
+            <!-- YouTube Iframe for Songs -->
+            <div id="youtube-player"></div>
+        </div>
+
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="Type a command..." autocomplete="off">
+            <input type="text" id="user-input" placeholder="Ask Eighteenai..." autocomplete="off">
             <button id="mic-btn"><i class="fa-solid fa-microphone"></i></button>
             <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
 
-        <!-- Hidden Audio Player -->
-        <audio id="music-player" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
-
-        <!-- Settings Modal -->
+        <!-- Settings -->
         <div class="settings-toggle" onclick="toggleSettings()">
             <i class="fa-solid fa-gear"></i>
         </div>
         <div id="settings-modal" class="modal hidden">
             <div class="modal-content">
-                <h3>Settings</h3>
+                <h3>Eighteenai Settings</h3>
                 <label>
                     <input type="checkbox" id="api-mode-toggle"> Enable Real AI (OpenAI)
                 </label>
                 <div id="api-key-container" class="hidden">
-                    <input type="password" id="api-key" placeholder="Paste OpenAI API Key here">
-                    <small>Key is stored only in your browser session.</small>
+                    <input type="password" id="api-key" placeholder="Paste OpenAI API Key">
                 </div>
                 <button onclick="toggleSettings()">Close</button>
             </div>
