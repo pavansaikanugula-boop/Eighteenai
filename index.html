@@ -19,18 +19,26 @@
 
         <div id="chat-window">
             <div class="message bot">
-                <div class="bubble">Hi! I am Eighteenai. 🤖✨<br>Try saying:<br>🎵 "Play Paro"<br>🎵 "Play Sahiba"<br>📖 "Tell a story"<br>🧮 "Open calculator"</div>
+                <div class="bubble">Hi! I am Eighteenai. 🤖✨<br>I can play <b>ANY</b> song you want!<br><br>Try saying:<br>🎵 "Play Paro"<br>🎵 "Play Shape of You"<br>📖 "Tell a story"<br>🧮 "Open calculator"</div>
             </div>
         </div>
 
-        <!-- Music Player Area -->
-        <div id="player-container" class="hidden">
-            <div class="now-playing">
-                <i class="fa-solid fa-music fa-beat"></i> Now Playing: <span id="song-title">None</span>
-                <button id="stop-music-btn" onclick="stopMusic()"><i class="fa-solid fa-stop"></i></button>
+        <!-- 🎵 Music Player Area -->
+        <div id="music-player" class="hidden">
+            <div class="player-card">
+                <img id="album-art" src="" alt="Album Art">
+                <div class="song-info">
+                    <div id="song-title" class="title">Song Name</div>
+                    <div id="artist-name" class="artist">Artist Name</div>
+                </div>
             </div>
-            <!-- YouTube Iframe for Songs -->
-            <div id="youtube-player"></div>
+            <div class="player-controls">
+                <audio id="audio-player" controls></audio>
+                <a id="yt-link" href="#" target="_blank" class="yt-btn">
+                    <i class="fa-brands fa-youtube"></i> Play Full Song on YouTube
+                </a>
+                <button id="close-player" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
 
         <div class="input-area">
@@ -46,12 +54,7 @@
         <div id="settings-modal" class="modal hidden">
             <div class="modal-content">
                 <h3>Eighteenai Settings</h3>
-                <label>
-                    <input type="checkbox" id="api-mode-toggle"> Enable Real AI (OpenAI)
-                </label>
-                <div id="api-key-container" class="hidden">
-                    <input type="password" id="api-key" placeholder="Paste OpenAI API Key">
-                </div>
+                <p style="font-size: 0.8rem; color: #aaa;">Music uses the free iTunes API (30s previews). Click the YouTube button for full songs!</p>
                 <button onclick="toggleSettings()">Close</button>
             </div>
         </div>
