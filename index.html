@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant Web App</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-robot"></i> Jarvis Web</h1>
+            <div class="status">
+                <span id="status-dot"></span>
+                <span id="status-text">Ready</span>
+            </div>
+        </header>
+
+        <div id="chat-window">
+            <div class="message bot">
+                <div class="bubble">Hello! I'm your AI assistant. Click the mic or type to interact. Try saying "Play music", "Tell a story", or "Open calculator".</div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type a command..." autocomplete="off">
+            <button id="mic-btn"><i class="fa-solid fa-microphone"></i></button>
+            <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+
+        <!-- Hidden Audio Player -->
+        <audio id="music-player" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Settings Modal -->
+        <div class="settings-toggle" onclick="toggleSettings()">
+            <i class="fa-solid fa-gear"></i>
+        </div>
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Settings</h3>
+                <label>
+                    <input type="checkbox" id="api-mode-toggle"> Enable Real AI (OpenAI)
+                </label>
+                <div id="api-key-container" class="hidden">
+                    <input type="password" id="api-key" placeholder="Paste OpenAI API Key here">
+                    <small>Key is stored only in your browser session.</small>
+                </div>
+                <button onclick="toggleSettings()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
