@@ -5,27 +5,16 @@ const sendBtn = document.getElementById('send-btn');
 const micBtn = document.getElementById('mic-btn');
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
-const playerContainer = document.getElementById('player-container');
+const musicPlayer = document.getElementById('music-player');
+const audioPlayer = document.getElementById('audio-player');
+const albumArt = document.getElementById('album-art');
 const songTitle = document.getElementById('song-title');
-const youtubePlayer = document.getElementById('youtube-player');
-const apiModeToggle = document.getElementById('api-mode-toggle');
-const apiKeyContainer = document.getElementById('api-key-container');
-const apiKeyInput = document.getElementById('api-key');
+const artistName = document.getElementById('artist-name');
+const ytLink = document.getElementById('yt-link');
 
 // State
 let isListening = false;
 let recognition;
-let useRealAI = false;
-
-// 🎵 SONG LIBRARY
-// Add your songs here. You can get the Video ID from YouTube URL.
-// Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ -> ID is dQw4w9WgXcQ
-const songLibrary = {
-    "paro": { id: "CevxZvSJLk8", name: "Paro" }, // Example ID, replace with actual Paro song ID
-    "sahiba": { id: "hTWKbfoikeg", name: "Sahiba" }, // Example ID, replace with actual Sahiba song ID
-    "kesariya": { id: "B7eMpZ5G0U0", name: "Kesariya" },
-    "apna bana le": { id: "sD1S6L5m5q0", name: "Apna Bana Le" }
-};
 
 // Initialize Speech Recognition
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -55,7 +44,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     };
 } else {
     micBtn.style.display = 'none';
-    addMessage("Voice not supported in this browser. Use Chrome/Edge.", 'bot');
 }
 
 // Event Listeners
@@ -76,22 +64,12 @@ userInput.addEventListener('keypress', (e) => {
     }
 });
 
-apiModeToggle.addEventListener('change', (e) => {
-    useRealAI = e.target.checked;
-    apiKeyContainer.classList.toggle('hidden', !useRealAI);
-});
-
 // Core Logic
 function handleInput(text) {
     addMessage(text, 'user');
     userInput.value = '';
     statusText.innerText = "Thinking...";
-    
-    if (useRealAI && apiKeyInput.value) {
-        callOpenAI(text);
-    } else {
-        setTimeout(() => processCommand(text.toLowerCase()), 500);
-    }
+    setTimeout(() => processCommand(text.toLowerCase()), 400);
 }
 
 function addMessage(text, sender) {
@@ -103,54 +81,46 @@ function addMessage(text, sender) {
 }
 
 function speak(text) {
-    window.speechSynthesis.cancel(); // Stop previous speech
+    window.speechSynthesis.cancel(); 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
-    utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
 }
 
-// 🛑 Stop Music Function
-function stopMusic() {
-    youtubePlayer.innerHTML = ''; // Remove iframe to stop audio
-    playerContainer.classList.add('hidden');
-    songTitle.innerText = "None";
-    speak("Music stopped.");
+function closePlayer() {
+    audioPlayer.pause();
+    musicPlayer.classList.add('hidden');
 }
 
 function processCommand(cmd) {
     let response = "";
     let actionTaken = false;
 
-    // 🎵 1. Check for Songs
-    if (cmd.includes('play')) {
-        for (const key in songLibrary) {
-            if (cmd.includes(key)) {
-                const song = songLibrary[key];
-                playSong(song.id, song.name);
-                response = `Playing ${song.name} 🎵...`;
-                actionTaken = true;
-                break;
-            }
+    // 🎵 1. PLAY ANY SONG LOGIC
+    const playMatch = cmd.match(/play\s+(.+)/);
+    
+    if (playMatch) {
+        const songQuery = playMatch[1].trim();
+        if (songQuery === 'music' || songQuery === 'a song') {
+            searchAndPlaySong("top hits 2024");
+            response = "Playing some trending music 🎵...";
+        } else {
+            searchAndPlaySong(songQuery);
+            response = `Searching for "${songQuery}"... 🎧`;
         }
-        if (!actionTaken && cmd.includes('play music')) {
-            // Fallback generic music
-            playSong("CevxZvSJLk8", "Relaxing Beats"); 
-            response = "Playing some relaxing music 🎵...";
-            actionTaken = true;
-        }
+        actionTaken = true;
     }
     
     // 🛑 Stop Music
-    else if (cmd.includes('stop music') || cmd.includes('pause music') || cmd.includes('band kar')) {
-        stopMusic();
-        response = "Music stopped.";
+    else if (cmd.includes('stop music') || cmd.includes('pause music') || cmd.includes('stop playing')) {
+        audioPlayer.pause();
+        response = "Music paused.";
         actionTaken = true;
     }
 
     // 📖 2. Story
     else if (cmd.includes('tell a story') || cmd.includes('kahani sunao')) {
-        response = "Once upon a time, Eighteenai was created to help humans. It could sing songs, tell stories, and bring joy to the web. And they lived happily ever after! ✨";
+        response = "Once upon a time, Eighteenai was created to help humans. It could sing any song in the world, tell stories, and bring joy to the web. And they lived happily ever after! ✨";
         actionTaken = true;
     }
 
@@ -172,13 +142,13 @@ function processCommand(cmd) {
         actionTaken = true;
     }
     else if (cmd.includes('who are you')) {
-        response = "I am Eighteenai, your intelligent web assistant created to help you! 🤖✨";
+        response = "I am Eighteenai, your intelligent web assistant! 🤖✨";
         actionTaken = true;
     }
 
     // Fallback
     if (!actionTaken) {
-        response = "I'm not sure how to do that. Try asking me to 'Play Paro', 'Tell a story', or 'Open calculator'.";
+        response = "I can play any song! Just say 'Play [Song Name]'. I can also tell stories or open apps.";
     }
 
     addMessage(response, 'bot');
@@ -186,53 +156,41 @@ function processCommand(cmd) {
     statusText.innerText = "Ready";
 }
 
-// 🎵 Play Song Function
-function playSong(videoId, name) {
-    playerContainer.classList.remove('hidden');
-    songTitle.innerText = name;
+// 🎵 FREE MUSIC SEARCH FUNCTION (iTunes API - NO API KEY REQUIRED)
+async function searchAndPlaySong(songName) {
+    statusText.innerText = "Searching Music...";
     
-    // Create YouTube Iframe (Autoplay enabled)
-    youtubePlayer.innerHTML = `
-        <iframe 
-            width="100%" 
-            height="200" 
-            src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}" 
-            frameborder="0" 
-            allow="autoplay; encrypted-media" 
-            allowfullscreen>
-        </iframe>
-    `;
-}
+    // We use the iTunes Search API. It's 100% free, no key needed, no CORS issues.
+    const query = encodeURIComponent(songName);
+    const url = `https://itunes.apple.com/search?term=${query}&media=music&limit=1`;
 
-// Real AI Integration
-async function callOpenAI(prompt) {
-    const apiKey = apiKeyInput.value;
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {role: "system", content: "You are Eighteenai. Keep responses short. If user asks to play a song, respond 'ACTION:PLAY_SONG'. If story, 'ACTION:STORY'."},
-                    {role: "user", content: prompt}
-                ]
-            })
-        });
+        const response = await fetch(url);
         const data = await response.json();
-        const reply = data.choices[0].message.content;
-        
-        if (reply.includes('ACTION:PLAY_SONG')) processCommand('play music');
-        else if (reply.includes('ACTION:STORY')) processCommand('tell a story');
-        else {
-            addMessage(reply, 'bot');
-            speak(reply);
+
+        if (data.resultCount > 0) {
+            const track = data.results[0];
+            
+            // Update UI
+            musicPlayer.classList.remove('hidden');
+            albumArt.src = track.artworkUrl100;
+            songTitle.innerText = track.trackName;
+            artistName.innerText = track.artistName;
+            
+            // Set Audio Source (30-second preview)
+            audioPlayer.src = track.previewUrl;
+            audioPlayer.play();
+
+            // Set YouTube Link for full song
+            const ytSearchQuery = encodeURIComponent(`${track.trackName} ${track.artistName} official`);
+            ytLink.href = `https://www.youtube.com/results?search_query=${ytSearchQuery}`;
+            
+        } else {
+            addMessage(`I couldn't find "${songName}" in the music database. Try a different name!`, 'bot');
         }
     } catch (error) {
-        addMessage("Error with AI. Check key.", 'bot');
+        console.error("Music API Error:", error);
+        addMessage("Error connecting to the music database. Check your internet.", 'bot');
     }
     statusText.innerText = "Ready";
 }
