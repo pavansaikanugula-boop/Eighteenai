@@ -1,7 +1,7 @@
 :root {
     --bg-color: #0f0f13;
     --chat-bg: #1a1a24;
-    --primary: #8a2be2; /* Purple/Blue vibe for Eighteenai */
+    --primary: #8a2be2; 
     --accent: #00d4ff;
     --user-msg: #8a2be2;
     --bot-msg: #2c2c3a;
@@ -32,10 +32,7 @@ body {
 }
 
 @media (min-width: 600px) {
-    .container {
-        height: 90vh;
-        border-radius: 20px;
-    }
+    .container { height: 90vh; border-radius: 20px; }
 }
 
 header {
@@ -55,35 +52,12 @@ header h1 {
     -webkit-text-fill-color: transparent;
 }
 
-/* Status Indicator */
-.status {
-    display: flex;
-    align-items: center;
-    font-size: 0.8rem;
-    color: #aaa;
-}
+.status { display: flex; align-items: center; font-size: 0.8rem; color: #aaa; }
+#status-dot { width: 10px; height: 10px; background-color: #4caf50; border-radius: 50%; margin-right: 8px; }
+#status-dot.listening { background-color: #ff4444; box-shadow: 0 0 10px #ff4444; animation: pulse 1s infinite; }
 
-#status-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #4caf50;
-    border-radius: 50%;
-    margin-right: 8px;
-}
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.5); } 100% { transform: scale(1); } }
 
-#status-dot.listening {
-    background-color: #ff4444;
-    box-shadow: 0 0 10px #ff4444;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.5); }
-    100% { transform: scale(1); }
-}
-
-/* Chat */
 #chat-window {
     flex: 1;
     overflow-y: auto;
@@ -93,14 +67,8 @@ header h1 {
     gap: 12px;
 }
 
-.message {
-    display: flex;
-    margin-bottom: 5px;
-}
-
-.message.user {
-    justify-content: flex-end;
-}
+.message { display: flex; margin-bottom: 5px; }
+.message.user { justify-content: flex-end; }
 
 .bubble {
     max-width: 75%;
@@ -111,55 +79,80 @@ header h1 {
     word-wrap: break-word;
 }
 
-.message.bot .bubble {
-    background-color: var(--bot-msg);
-    border-bottom-left-radius: 4px;
+.message.bot .bubble { background-color: var(--bot-msg); border-bottom-left-radius: 4px; }
+.message.user .bubble { background-color: var(--user-msg); border-bottom-right-radius: 4px; color: white; }
+
+/* 🎵 Music Player Styles */
+#music-player {
+    background: linear-gradient(180deg, #252535, #1a1a24);
+    border-top: 2px solid var(--primary);
+    padding: 15px;
+    animation: slideUp 0.3s ease;
 }
 
-.message.user .bubble {
-    background-color: var(--user-msg);
-    border-bottom-right-radius: 4px;
-    color: white;
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-/* Music Player Bar */
-#player-container {
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px 15px;
-    border-top: 1px solid #333;
-    transition: all 0.3s ease;
-}
+#music-player.hidden { display: none; }
 
-#player-container.hidden {
-    display: none;
-}
-
-.now-playing {
+.player-card {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 0.9rem;
-    color: var(--accent);
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
-#song-title {
+#album-art {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.song-info { flex: 1; overflow: hidden; }
+.title { font-weight: bold; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.artist { font-size: 0.85rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.player-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+#audio-player {
+    width: 100%;
+    height: 35px;
+    filter: invert(1) hue-rotate(180deg); /* Makes default audio player look dark/purple */
+}
+
+.yt-btn {
+    background: #ff0000;
     color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
     font-weight: bold;
-    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.1s;
 }
+.yt-btn:hover { transform: scale(1.05); }
 
-#stop-music-btn {
-    background: #ff4444;
+#close-player {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 25px;
+    height: 25px;
+    background: rgba(255,255,255,0.1);
     color: white;
-    width: 30px;
-    height: 30px;
     font-size: 0.8rem;
-}
-
-#youtube-player {
-    height: 0;
-    overflow: hidden;
-    /* Keeps iframe hidden but functional, or set height to 200px if you want video visible */
 }
 
 /* Input Area */
@@ -180,9 +173,7 @@ input {
     outline: none;
 }
 
-input:focus {
-    border-color: var(--primary);
-}
+input:focus { border-color: var(--primary); }
 
 button {
     width: 45px;
@@ -195,46 +186,12 @@ button {
     transition: transform 0.1s;
 }
 
-button:active {
-    transform: scale(0.9);
-}
+button:active { transform: scale(0.9); }
+#mic-btn.listening { background: #ff4444; animation: pulse 1s infinite; }
 
-#mic-btn.listening {
-    background: #ff4444;
-    animation: pulse 1s infinite;
-}
-
-/* Settings */
-.settings-toggle {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    color: #666;
-    z-index: 10;
-}
+.settings-toggle { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #666; z-index: 10; }
 .settings-toggle:hover { color: var(--accent); }
 
-.modal {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
+.modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100; }
 .hidden { display: none !important; }
-.modal-content {
-    background: #2c2c3a;
-    padding: 25px;
-    border-radius: 15px;
-    width: 80%;
-    text-align: center;
-    border: 1px solid var(--primary);
-}
-.modal-content input {
-    width: 90%;
-    margin: 10px 0;
-    padding: 10px;
-}
+.modal-content { background: #2c2c3a; padding: 25px; border-radius: 15px; width: 80%; text-align: center; border: 1px solid var(--primary); }
